@@ -12,9 +12,9 @@ module mem8x16 (
   output reg [15:0] dout
 );
 
-  wire [3:0] rowclk;
-  wire [15:0] rowout[0:3];
-  reg [3:0] adrDcod;
+  wire [6:0] rowclk;
+  wire [15:0] rowout[0:6];
+  reg [6:0] adrDcod;
   reg [15:0] outbuf;
 
   always_latch begin
@@ -25,38 +25,38 @@ module mem8x16 (
 
   always @* begin
     case (addr)
-      'd0: adrDcod = 8'b00000001;
-      'd1: adrDcod = 8'b00000010;
-      'd2: adrDcod = 8'b00000100;
-      'd3: adrDcod = 8'b00001000;
-//      'd4: adrDcod = 8'b00010000;
-//      'd5: adrDcod = 8'b00100000;
-//      'd6: adrDcod = 8'b01000000;
-//      'd7: adrDcod = 8'b10000000;
-      default: adrDcod = 8'b00000000;
+      'h0: adrDcod = 7'h01;
+      'h1: adrDcod = 7'h02;
+      'h2: adrDcod = 7'h04;
+      'h3: adrDcod = 7'h08;
+      'h4: adrDcod = 7'h10;
+      'h5: adrDcod = 7'h20;
+      'h6: adrDcod = 7'h40;
+//      'h7: adrDcod = 8'h80;
+      default: adrDcod = 7'h00;
     endcase
   end
 
-  assign rowclk = adrDcod & {4{we}} & {4{cs}} & {4{clk}};
+  assign rowclk = adrDcod & {7{we}} & {7{cs}} & {7{clk}};
   memrow row0 (.clkp(rowclk[0]), .rstp(rst), .D16(din), .Q16(rowout[0]));
   memrow row1 (.clkp(rowclk[1]), .rstp(rst), .D16(din), .Q16(rowout[1]));
   memrow row2 (.clkp(rowclk[2]), .rstp(rst), .D16(din), .Q16(rowout[2]));
   memrow row3 (.clkp(rowclk[3]), .rstp(rst), .D16(din), .Q16(rowout[3]));
-//  memrow row4 (.clkp(rowclk[4]), .rstp(rst), .D16(din), .Q16(rowout[4]));
-//  memrow row5 (.clkp(rowclk[5]), .rstp(rst), .D16(din), .Q16(rowout[5]));
-//  memrow row6 (.clkp(rowclk[6]), .rstp(rst), .D16(din), .Q16(rowout[6]));
+  memrow row4 (.clkp(rowclk[4]), .rstp(rst), .D16(din), .Q16(rowout[4]));
+  memrow row5 (.clkp(rowclk[5]), .rstp(rst), .D16(din), .Q16(rowout[5]));
+  memrow row6 (.clkp(rowclk[6]), .rstp(rst), .D16(din), .Q16(rowout[6]));
 //  memrow row7 (.clkp(rowclk[7]), .rstp(rst), .D16(din), .Q16(rowout[7]));
 
   always @* begin
     case (addr)
-      'd0: outbuf = rowout[0];
-      'd1: outbuf = rowout[1];
-      'd2: outbuf = rowout[2];
-      'd3: outbuf = rowout[3];
-//      'd4: outbuf = rowout[4];
-//      'd5: outbuf = rowout[5];
-//      'd6: outbuf = rowout[6];
-//      'd7: outbuf = rowout[7];
+      'h0: outbuf = rowout[0];
+      'h1: outbuf = rowout[1];
+      'h2: outbuf = rowout[2];
+      'h3: outbuf = rowout[3];
+      'h4: outbuf = rowout[4];
+      'h5: outbuf = rowout[5];
+      'h6: outbuf = rowout[6];
+//      'h7: outbuf = rowout[7];
     endcase
   end
 
