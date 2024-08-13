@@ -19,10 +19,12 @@ module tt_um_LnL_SoC (
   supply0 minus;
   supply1 plus;
   reg rst_n_i;
-  wire [15:0] data_to_dev, data_to_cpu, mem_to_cpu, boot_to_cpu;
+  wire [15:0] data_to_dev, data_to_cpu, boot_to_cpu;
+//  wire [15:0] mem_to_cpu;
   wire [11:0] addr_to_memio;
   wire [7:0] spi_to_cpu;
-  wire rw_to_mem, load_spi, unload_spi, en_to_spi, en_to_dev, en_to_mem, en_to_boot;
+  wire rw_to_mem, load_spi, unload_spi, en_to_spi, en_to_dev, en_to_boot;
+//  wire en_to_mem;
 
   assign uio_oe = 8'hF0; // Lower nibble all input, Upper all output
   assign uio_out[3:0] = 4'h0; // uio_out unused bits
