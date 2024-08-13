@@ -79,7 +79,7 @@ module bootrom (
   assign clk8th = addr[3] & ~addr[2] & ~addr[1] & ~addr[0] & clk_gated;
   always @ (posedge clk8th or posedge rst) begin
     if (rst) begin
-      outbuf8 <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+      outbuf8 <= 16'h0000;
     end else begin
       outbuf8 <= din;
     end
@@ -87,7 +87,7 @@ module bootrom (
   assign clk9th = addr[3] & ~addr[2] & ~addr[1] & addr[0] & clk_gated;
   always @ (posedge clk9th or posedge rst) begin
     if (rst) begin
-      outbuf9 <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+      outbuf9 <= 16'h0000;
     end else begin
       outbuf9 <= din;
     end
@@ -95,7 +95,7 @@ module bootrom (
   assign clkAth = addr[3] & ~addr[2] & addr[1] & ~addr[0] & clk_gated;
   always @ (posedge clkAth or posedge rst) begin
     if (rst) begin
-      outbufA <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+      outbufA <= 16'h0000;
     end else begin
       outbufA <= din;
     end
@@ -103,7 +103,7 @@ module bootrom (
   assign clkBth = addr[3] & ~addr[2] & addr[1] & addr[0] & clk_gated;
   always @ (posedge clkBth or posedge rst) begin
     if (rst) begin
-      outbufB <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+      outbufB <= 16'h0000;
     end else begin
       outbufB <= din;
     end
