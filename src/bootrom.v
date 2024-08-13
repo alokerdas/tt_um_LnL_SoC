@@ -7,7 +7,7 @@ module bootrom (
   input rst,
   input cs,
   input we,
-  input [2:0] addr,
+  input [3:0] addr,
   input [15:0] din,
   output reg [15:0] dout
 );
