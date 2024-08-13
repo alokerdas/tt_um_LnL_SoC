@@ -20,11 +20,9 @@ module tt_um_LnL_SoC (
   supply1 plus;
   reg rst_n_i;
   wire [15:0] data_to_dev, data_to_cpu, boot_to_cpu;
-//  wire [15:0] mem_to_cpu;
   wire [11:0] addr_to_memio;
   wire [7:0] spi_to_cpu;
   wire rw_to_mem, load_spi, unload_spi, en_to_spi, en_to_dev, en_to_boot;
-//  wire en_to_mem;
 
   assign uio_oe = 8'hF0; // Lower nibble all input, Upper all output
   assign uio_out[3:0] = 4'h0; // uio_out unused bits
@@ -33,16 +31,12 @@ module tt_um_LnL_SoC (
     if (~rst_n) rst_n_i <= 1'b0;
     else rst_n_i <= 1'b1;
 
-  assign en_to_boot = ~(|addr_to_memio[11:4]) & en_to_dev;
-  assign en_to_spi = |addr_to_memio[11:4] & en_to_dev;
+  assign en_to_spi = |addr_to_memio[11:3] & en_to_dev;
+  assign en_to_boot = ~(|addr_to_memio[11:3]) & en_to_dev;
   assign load_spi = rw_to_mem & en_to_spi;
   assign unload_spi = ~rw_to_mem & en_to_spi;
   assign data_to_cpu[7:0] = en_to_spi ? spi_to_cpu : boot_to_cpu[7:0];
   assign data_to_cpu[15:8] = en_to_spi ? 8'h00 : boot_to_cpu[15:8];
-//  assign en_to_boot = ~(|addr_to_memio[11:3]) & en_to_dev;
-//  assign en_to_mem = ~(|addr_to_memio[11:4]) & addr_to_memio[3] & en_to_dev;
-//  assign data_to_cpu[7:0] = en_to_spi ? spi_to_cpu : (addr_to_memio[3] ? mem_to_cpu[7:0] : boot_to_cpu[7:0]);
-//  assign data_to_cpu[15:8] = en_to_spi ? 8'h00 : (addr_to_memio[3] ? mem_to_cpu[15:8] : boot_to_cpu[15:8]);
 
   cpu cpu0 (
 `ifdef USE_POWER_PINS
@@ -68,27 +62,12 @@ module tt_um_LnL_SoC (
 `endif
     .clk(clk),
     .rst(~rst_n_i),
-    .addr(addr_to_memio[3:0]),
+    .addr(addr_to_memio[2:0]),
     .din(data_to_dev),
     .dout(boot_to_cpu),
     .cs(en_to_boot),
     .we(rw_to_mem)
   );
-  /*
-  mem8x16 mem1 (
-`ifdef USE_POWER_PINS
-    .vccd1(plus),
-    .vssd1(minus),
-`endif
-    .clk(clk),
-    .rst(~rst_n_i),
-    .addr(addr_to_memio[2:0]),
-    .din(data_to_dev),
-    .dout(mem_to_cpu),
-    .cs(en_to_mem),
-    .we(rw_to_mem)
-  );
-  */
   spi spi0 (
 `ifdef USE_POWER_PINS
     .vccd1(plus),
