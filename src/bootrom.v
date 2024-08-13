@@ -7,7 +7,7 @@ module bootrom (
   input rst,
   input cs,
   input we,
-  input [2:0] addr,
+  input [3:0] addr,
   input [15:0] din,
   output reg [15:0] dout
 );
@@ -20,11 +20,20 @@ module bootrom (
   reg [15:0] outbuf5;
   reg [15:0] outbuf6;
   reg [15:0] outbuf7;
+  reg [15:0] outbufF;
   reg [15:0] dout_internal;
-  wire romclk, clk7th;
+  wire romclk, clk7th, clkFth;
 
   assign romclk = clk & 1'b0;
-  assign clk7th = clk & we & cs & (|addr);
+  assign clk7th = clk & we & cs & (~addr[3] & addr[2] & addr[1] & addr[0]);
+  assign clkFth = clk & we & cs & (&addr);
+  always @ (posedge clkFth or posedge rst) begin
+    if (rst) begin
+      outbufF <= 16'h0000;
+    end else begin
+      outbufF <= din;
+    end
+  end
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbuf0 <= 16'hF200;
@@ -76,7 +85,7 @@ module bootrom (
   end
   always @ (posedge clk7th or posedge rst) begin
     if (rst) begin
-      outbuf7 <= 16'h000F;
+      outbuf7 <= 16'h000F; // this is tricky, it tests bootrom, mem and spi
     end else begin
       outbuf7 <= din;
     end

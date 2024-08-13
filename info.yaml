@@ -21,7 +21,6 @@ project:
     - "cpu.v"
     - "spi.v"
     - "bootrom.v"
-    - "mem8x16.v"
 
 # The pinout of your project. Leave unused pins blank. DO NOT delete or add any pins.
 pinout:
