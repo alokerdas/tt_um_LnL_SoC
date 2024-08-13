@@ -16,7 +16,8 @@ module bootrom (
   reg[15:0] outbuf8, outbuf9, outbufA, outbufB;
   reg [15:0] dout_internal;
   wire romclk;
-
+  wire clk_gated, clk8th, clk9th, clkAth, clkBth;
+  
   assign romclk = clk & 1'b0;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
@@ -69,33 +70,38 @@ module bootrom (
   end
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
-      outbuf7 <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+      outbuf7 <= 16'h0000;
     end else begin
-      outbuf7 <= din;
+      outbuf7 <= 16'h0000;
     end
   end
-  always @ (posedge romclk or posedge rst) begin
+  assign clk_gated = cs & we & clk;
+  assign clk8th = addr[3] & ~addr[2] & ~addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge clk8th or posedge rst) begin
     if (rst) begin
       outbuf8 <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
     end else begin
       outbuf8 <= din;
     end
   end
-  always @ (posedge romclk or posedge rst) begin
+  assign clk9th = addr[3] & ~addr[2] & ~addr[1] & addr[0] & clk_gated;
+  always @ (posedge clk9th or posedge rst) begin
     if (rst) begin
       outbuf9 <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
     end else begin
       outbuf9 <= din;
     end
   end
-  always @ (posedge romclk or posedge rst) begin
+  assign clkAth = addr[3] & ~addr[2] & addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge clkAth or posedge rst) begin
     if (rst) begin
       outbufA <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
     end else begin
       outbufA <= din;
     end
   end
-  always @ (posedge romclk or posedge rst) begin
+  assign clkBth = addr[3] & ~addr[2] & addr[1] & addr[0] & clk_gated;
+  always @ (posedge clkBth or posedge rst) begin
     if (rst) begin
       outbufB <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
     end else begin
