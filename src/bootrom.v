@@ -76,56 +76,56 @@ module bootrom (
     end
   end
   assign clk_gated = cs & we & clk;
-  assign clk8th = addr[3] & ~addr[2] & ~addr[1] & ~addr[0] & clk_gated;
-  always @ (posedge clk8th or posedge rst) begin
+//  assign clk8th = addr[3] & ~addr[2] & ~addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbuf8 <= 16'h0000;
     end else begin
       outbuf8 <= din;
     end
   end
-  assign clk9th = addr[3] & ~addr[2] & ~addr[1] & addr[0] & clk_gated;
-  always @ (posedge clk9th or posedge rst) begin
+//  assign clk9th = addr[3] & ~addr[2] & ~addr[1] & addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbuf9 <= 16'h0000;
     end else begin
       outbuf9 <= din;
     end
   end
-  assign clkAth = addr[3] & ~addr[2] & addr[1] & ~addr[0] & clk_gated;
-  always @ (posedge clkAth or posedge rst) begin
+//  assign clkAth = addr[3] & ~addr[2] & addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufA <= 16'h0000;
     end else begin
       outbufA <= din;
     end
   end
-  assign clkBth = addr[3] & ~addr[2] & addr[1] & addr[0] & clk_gated;
-  always @ (posedge clkBth or posedge rst) begin
+//  assign clkBth = addr[3] & ~addr[2] & addr[1] & addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufB <= 16'h0000;
     end else begin
       outbufB <= din;
     end
   end
-  assign clkCth = addr[3] & addr[2] & ~addr[1] & ~addr[0] & clk_gated;
-  always @ (posedge clkCth or posedge rst) begin
+//  assign clkCth = addr[3] & addr[2] & ~addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufC <= 16'h0000;
     end else begin
       outbufC <= din;
     end
   end
-  assign clkDth = addr[3] & addr[2] & ~addr[1] & addr[0] & clk_gated;
-  always @ (posedge clkDth or posedge rst) begin
+//  assign clkDth = addr[3] & addr[2] & ~addr[1] & addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufD <= 16'h0000;
     end else begin
       outbufD <= din;
     end
   end
-  assign clkEth = addr[3] & addr[2] & addr[1] & ~addr[0] & clk_gated;
-  always @ (posedge clkEth or posedge rst) begin
+//  assign clkEth = addr[3] & addr[2] & addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufE <= 16'h0000;
     end else begin
