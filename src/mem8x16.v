@@ -12,9 +12,9 @@ module mem8x16 (
   output reg [15:0] dout
 );
 
-  wire [2:0] rowclk;
-  wire [15:0] rowout[0:2];
-  reg [2:0] adrDcod;
+  wire [1:0] rowclk;
+  wire [15:0] rowout[0:1];
+  reg [1:0] adrDcod;
   reg [15:0] outbuf;
 
   always_latch begin
@@ -25,9 +25,9 @@ module mem8x16 (
 
   always @* begin
     case (addr)
-      'h0: adrDcod = 3'h01;
-      'h1: adrDcod = 3'h02;
-      'h2: adrDcod = 3'h4;
+      'h0: adrDcod = 2'h1;
+      'h1: adrDcod = 2'h2;
+//      'h2: adrDcod = 3'h4;
 //      'h3: adrDcod = 4'h8;
 //      'h4: adrDcod = 5'h10;
 //      'h5: adrDcod = 6'h20;
@@ -37,10 +37,10 @@ module mem8x16 (
     endcase
   end
 
-  assign rowclk = adrDcod & {5{we}} & {5{cs}} & {5{clk}};
+  assign rowclk = adrDcod & {2{we}} & {2{cs}} & {2{clk}};
   memrow row0 (.clkp(rowclk[0]), .rstp(rst), .D16(din), .Q16(rowout[0]));
   memrow row1 (.clkp(rowclk[1]), .rstp(rst), .D16(din), .Q16(rowout[1]));
-  memrow row2 (.clkp(rowclk[2]), .rstp(rst), .D16(din), .Q16(rowout[2]));
+//  memrow row2 (.clkp(rowclk[2]), .rstp(rst), .D16(din), .Q16(rowout[2]));
 //  memrow row3 (.clkp(rowclk[3]), .rstp(rst), .D16(din), .Q16(rowout[3]));
 //  memrow row4 (.clkp(rowclk[4]), .rstp(rst), .D16(din), .Q16(rowout[4]));
 //  memrow row5 (.clkp(rowclk[5]), .rstp(rst), .D16(din), .Q16(rowout[5]));
@@ -51,7 +51,7 @@ module mem8x16 (
     case (addr)
       'h0: outbuf = rowout[0];
       'h1: outbuf = rowout[1];
-      'h2: outbuf = rowout[2];
+//      'h2: outbuf = rowout[2];
 //      'h3: outbuf = rowout[3];
 //      'h4: outbuf = rowout[4];
 //      'h5: outbuf = rowout[5];
