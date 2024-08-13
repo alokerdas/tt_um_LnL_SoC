@@ -13,6 +13,7 @@ module bootrom (
 );
 
   reg [15:0] outbuf0, outbuf1, outbuf2, outbuf3, outbuf4, outbuf5, outbuf6, outbuf7;
+  reg[15:0] outbuf8, outbuf9, outbufA, outbufB;
   reg [15:0] dout_internal;
   wire romclk;
 
@@ -73,6 +74,34 @@ module bootrom (
       outbuf7 <= din;
     end
   end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf8 <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+    end else begin
+      outbuf8 <= din;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf9 <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+    end else begin
+      outbuf9 <= din;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbufA <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+    end else begin
+      outbufA <= din;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbufB <= 16'h0000; // this is tricky, it tests bootrom, mem and spi
+    end else begin
+      outbufB <= din;
+    end
+  end
 
   always @* begin
     case (addr)
@@ -84,6 +113,10 @@ module bootrom (
       'h5: dout_internal = outbuf5;
       'h6: dout_internal = outbuf6;
       'h7: dout_internal = outbuf7;
+      'h8: dout_internal = outbuf8;
+      'h9: dout_internal = outbuf9;
+      'hA: dout_internal = outbufA;
+      'hB: dout_internal = outbufB;
     endcase
   end
 
