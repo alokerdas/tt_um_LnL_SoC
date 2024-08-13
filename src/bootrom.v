@@ -13,16 +13,16 @@ module bootrom (
 );
 
   reg [15:0] outbuf0, outbuf1, outbuf2, outbuf3, outbuf4, outbuf5, outbuf6, outbuf7;
-  reg [15:0] outbuf8, outbuf9, outbufA, outbufB; // outbufC, outbufD, outbufE, outbufF;
+  reg [15:0] outbuf8, outbuf9, outbufA;// outbufB, outbufC, outbufD, outbufE, outbufF;
   reg [15:0] dout_internal;
-  wire romclk, clk7th, clk8th, clk9th, clkAth, clkBth; // clkCth, clkDth, clkEth, clkFth;
+  wire romclk, clk7th, clk8th, clk9th, clkAth; // clkBth, clkCth, clkDth, clkEth, clkFth;
 
   assign romclk = clk & 1'b0;
   assign clk7th = clk & we & cs & (~addr[3] & addr[2] & addr[1] & addr[0]);
   assign clk8th = clk & we & cs & (addr[3] & ~addr[2] & ~addr[1] & ~addr[0]);
   assign clk9th = clk & we & cs & (addr[3] & ~addr[2] & ~addr[1] & addr[0]);
   assign clkAth = clk & we & cs & (addr[3] & ~addr[2] & addr[1] & ~addr[0]);
-  assign clkBth = clk & we & cs & (addr[3] & ~addr[2] & addr[1] & addr[0]);
+//  assign clkBth = clk & we & cs & (addr[3] & ~addr[2] & addr[1] & addr[0]);
 //  assign clkCth = clk & we & cs & (addr[3] & addr[2] & ~addr[1] & ~addr[0]);
 //  assign clkDth = clk & we & cs & (addr[3] & addr[2] & ~addr[1] & addr[0]);
 //  assign clkEth = clk & we & cs & (addr[3] & addr[2] & addr[1] & ~addr[0]);
@@ -50,6 +50,7 @@ module bootrom (
       outbufA <= din;
     end
   end
+  /*
   always @ (posedge clkBth or posedge rst) begin
     if (rst) begin
       outbufB <= 16'h0000;
@@ -57,7 +58,6 @@ module bootrom (
       outbufB <= din;
     end
   end
-  /*
   always @ (posedge clkCth or posedge rst) begin
     if (rst) begin
       outbufC <= 16'h0000;
@@ -158,7 +158,7 @@ module bootrom (
       'h8: dout_internal = outbuf8;
       'h9: dout_internal = outbuf9;
       'hA: dout_internal = outbufA;
-      'hB: dout_internal = outbufB;
+//      'hB: dout_internal = outbufB;
 //      'hC: dout_internal = outbufC;
 //      'hD: dout_internal = outbufD;
 //      'hE: dout_internal = outbufE;
