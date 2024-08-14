@@ -16,8 +16,9 @@ module bootrom (
   reg [15:0] outbuf8, outbuf9, outbufA, outbufB, outbufC, outbufD, outbufE, outbufF;
   reg [15:0] dout_internal;
   wire romclk;
-//  wire clk_gated, clk8th, clk9th, clkAth, clkBth, clkCth, clkDth, clkEth, clkFth;
+  wire clk_gated, clk7th; //clk8th, clk9th, clkAth, clkBth, clkCth, clkDth, clkEth, clkFth;
   
+  assign clk_gated = cs & we & clk;
   assign romclk = clk & 1'b0;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
@@ -56,7 +57,7 @@ module bootrom (
   end
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
-      outbuf5 <= 16'h3008;
+      outbuf5 <= 16'h3007;
     end else begin
       outbuf5 <= 16'h0000;
     end
@@ -68,14 +69,15 @@ module bootrom (
       outbuf6 <= 16'h0000;
     end
   end
-  always @ (posedge romclk or posedge rst) begin
+  
+  assign clk7th = ~addr[3] & addr[2] & addr[1] & addr[0] & clk_gated;
+  always @ (posedge clk7th or posedge rst) begin
     if (rst) begin
       outbuf7 <= 16'h0000;
     end else begin
-      outbuf7 <= 16'h0000;
+      outbuf7 <= din;
     end
   end
-//  assign clk_gated = cs & we & clk;
 //  assign clk8th = addr[3] & ~addr[2] & ~addr[1] & ~addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
