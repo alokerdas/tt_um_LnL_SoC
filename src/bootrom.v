@@ -15,7 +15,7 @@ module bootrom (
   reg [15:0] outbuf0, outbuf1, outbuf2, outbuf3, outbuf4, outbuf5, outbuf6, outbuf7;
   reg [15:0] outbuf8, outbuf9, outbufA, outbufB, outbufC, outbufD, outbufE, outbufF;
   reg [15:0] dout_internal, databuf;
-  reg [11:0] addrbuf;
+  reg [3:0] addrbuf;
   wire romclk;
   wire clk_gated, clk7th; //clk8th, clk9th, clkAth, clkBth, clkCth, clkDth, clkEth, clkFth;
   
