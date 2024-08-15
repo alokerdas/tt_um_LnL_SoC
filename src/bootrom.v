@@ -15,11 +15,13 @@ module bootrom (
   reg [15:0] outbuf0, outbuf1, outbuf2, outbuf3, outbuf4, outbuf5, outbuf6, outbuf7;
   reg [15:0] outbuf8, outbuf9, outbufA, outbufB, outbufC, outbufD, outbufE, outbufF;
   reg [15:0] dout_internal, databuf;
+  reg [11:0] addrbuf;
   wire romclk;
   wire clk_gated, clk7th; //clk8th, clk9th, clkAth, clkBth, clkCth, clkDth, clkEth, clkFth;
   
   always_latch begin
     if (cs) begin
+      addrbuf = addr;
       if (we) begin
         databuf = din;
       end else begin
@@ -80,7 +82,7 @@ module bootrom (
     end
   end
   
-  assign clk7th = ~addr[3] & addr[2] & addr[1] & addr[0] & clk_gated;
+  assign clk7th = ~addrbuf[3] & addrbuf[2] & addrbuf[1] & addrbuf[0] & clk_gated;
   always @ (posedge clk7th or posedge rst) begin
     if (rst) begin
       outbuf7 <= 16'h0000;
@@ -154,7 +156,7 @@ module bootrom (
   end
 
   always @* begin
-    case (addr)
+    case (addrbuf)
       'h0: dout_internal = outbuf0;
       'h1: dout_internal = outbuf1;
       'h2: dout_internal = outbuf2;
