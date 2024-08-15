@@ -55,6 +55,7 @@ module tt_um_LnL_SoC (
     .rdwr(rw_to_mem),
     .en(en_to_dev)
   );
+    /*
   bootrom mem0 (
 `ifdef USE_POWER_PINS
     .vccd1(plus),
@@ -68,6 +69,7 @@ module tt_um_LnL_SoC (
     .cs(en_to_boot),
     .we(rw_to_mem)
   );
+  */
   spi spi0 (
 `ifdef USE_POWER_PINS
     .vccd1(plus),
@@ -86,6 +88,159 @@ module tt_um_LnL_SoC (
     .ssn_out(uio_out[4])
   );
 
+  wire [3:0] addr;
+  reg [15:0] outbuf0, outbuf1, outbuf2, outbuf3, outbuf4, outbuf5, outbuf6, outbuf7;
+  reg [15:0] outbuf8, outbuf9, outbufA, outbufB, outbufC, outbufD, outbufE, outbufF;
+  wire romclk, rst;
+  wire clk_gated, clk7th; //clk8th, clk9th, clkAth, clkBth, clkCth, clkDth, clkEth, clkFth;
+
+  assign addr = addr_to_memio[3:0];
+  assign rst = ~rst_n_i;
+  assign clk_gated = en_to_boot & rw_to_mem & clk;
+  assign romclk = clk & 1'b0;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf0 <= 16'hF200;
+    end else begin
+      outbuf0 <= 16'h0000;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf1 <= 16'h4000;
+    end else begin
+      outbuf1 <= 16'h0000;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf2 <= 16'hF800;
+    end else begin
+      outbuf2 <= 16'h0000;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf3 <= 16'h1007;
+    end else begin
+      outbuf3 <= 16'h0000;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf4 <= 16'hF400;
+    end else begin
+      outbuf4 <= 16'h0000;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf5 <= 16'h3007;
+    end else begin
+      outbuf5 <= 16'h0000;
+    end
+  end
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf6 <= 16'h4000;
+    end else begin
+      outbuf6 <= 16'h0000;
+    end
+  end
+  
+  assign clk7th = ~addr[3] & addr[2] & addr[1] & addr[0] & clk_gated;
+  always @ (posedge clk7th or posedge rst) begin
+    if (rst) begin
+      outbuf7 <= 16'h0000;
+    end else begin
+      outbuf7 <= data_to_dev;
+    end
+  end
+//  assign clk8th = addr[3] & ~addr[2] & ~addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf8 <= 16'h0000;
+    end else begin
+      outbuf8 <= data_to_dev;
+    end
+  end
+//  assign clk9th = addr[3] & ~addr[2] & ~addr[1] & addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbuf9 <= 16'h0000;
+    end else begin
+      outbuf9 <= data_to_dev;
+    end
+  end
+//  assign clkAth = addr[3] & ~addr[2] & addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbufA <= 16'h0000;
+    end else begin
+      outbufA <= data_to_dev;
+    end
+  end
+//  assign clkBth = addr[3] & ~addr[2] & addr[1] & addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbufB <= 16'h0000;
+    end else begin
+      outbufB <= data_to_dev;
+    end
+  end
+//  assign clkCth = addr[3] & addr[2] & ~addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbufC <= 16'h0000;
+    end else begin
+      outbufC <= data_to_dev;
+    end
+  end
+//  assign clkDth = addr[3] & addr[2] & ~addr[1] & addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbufD <= 16'h0000;
+    end else begin
+      outbufD <= data_to_dev;
+    end
+  end
+//  assign clkEth = addr[3] & addr[2] & addr[1] & ~addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbufE <= 16'h0000;
+    end else begin
+      outbufE <= data_to_dev;
+    end
+  end
+//  assign clkFth = addr[3] & addr[2] & addr[1] & addr[0] & clk_gated;
+  always @ (posedge romclk or posedge rst) begin
+    if (rst) begin
+      outbufF <= 16'h0000;
+    end else begin
+      outbufF <= data_to_dev;
+    end
+  end
+
+  always @* begin
+    case (addr)
+      'h0: boot_to_cpu = outbuf0;
+      'h1: boot_to_cpu = outbuf1;
+      'h2: boot_to_cpu = outbuf2;
+      'h3: boot_to_cpu = outbuf3;
+      'h4: boot_to_cpu = outbuf4;
+      'h5: boot_to_cpu = outbuf5;
+      'h6: boot_to_cpu = outbuf6;
+      'h7: boot_to_cpu = outbuf7;
+      'h8: boot_to_cpu = outbuf8;
+      'h9: boot_to_cpu = outbuf9;
+      'hA: boot_to_cpu = outbufA;
+      'hB: boot_to_cpu = outbufB;
+      'hC: boot_to_cpu = outbufC;
+      'hD: boot_to_cpu = outbufD;
+      'hE: boot_to_cpu = outbufE;
+      'hF: boot_to_cpu = outbufF;
+    endcase
+  end
   // avoid linter warning about unused pins:
   wire _unused_pin = ena;
   wire [4:0] _unused_pins = uio_in[7:3];
