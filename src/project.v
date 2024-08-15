@@ -19,7 +19,8 @@ module tt_um_LnL_SoC (
   supply0 minus;
   supply1 plus;
   reg rst_n_i;
-  wire [15:0] data_to_dev, data_to_cpu, boot_to_cpu;
+  reg [15:0] boot_to_cpu;
+  wire [15:0] data_to_dev, data_to_cpu;
   wire [11:0] addr_to_memio;
   wire [7:0] spi_to_cpu;
   wire rw_to_mem, load_spi, unload_spi, en_to_spi, en_to_dev, en_to_boot;
@@ -90,7 +91,7 @@ module tt_um_LnL_SoC (
 
   wire [3:0] addr;
   reg [15:0] outbuf0, outbuf1, outbuf2, outbuf3, outbuf4, outbuf5, outbuf6, outbuf7;
-  reg [15:0] outbuf8, outbuf9, outbufA, outbufB, outbufC, outbufD, outbufE, outbufF;
+  reg [15:0] outbuf8, outbuf9, outbufA, outbufB, outbufC, outbufD, outbufE, outbufF, dout;
   wire romclk, rst;
   wire clk_gated, clk7th; //clk8th, clk9th, clkAth, clkBth, clkCth, clkDth, clkEth, clkFth;
 
@@ -223,24 +224,31 @@ module tt_um_LnL_SoC (
 
   always @* begin
     case (addr)
-      'h0: boot_to_cpu = outbuf0;
-      'h1: boot_to_cpu = outbuf1;
-      'h2: boot_to_cpu = outbuf2;
-      'h3: boot_to_cpu = outbuf3;
-      'h4: boot_to_cpu = outbuf4;
-      'h5: boot_to_cpu = outbuf5;
-      'h6: boot_to_cpu = outbuf6;
-      'h7: boot_to_cpu = outbuf7;
-      'h8: boot_to_cpu = outbuf8;
-      'h9: boot_to_cpu = outbuf9;
-      'hA: boot_to_cpu = outbufA;
-      'hB: boot_to_cpu = outbufB;
-      'hC: boot_to_cpu = outbufC;
-      'hD: boot_to_cpu = outbufD;
-      'hE: boot_to_cpu = outbufE;
-      'hF: boot_to_cpu = outbufF;
+      'h0: dout = outbuf0;
+      'h1: dout = outbuf1;
+      'h2: dout = outbuf2;
+      'h3: dout = outbuf3;
+      'h4: dout = outbuf4;
+      'h5: dout = outbuf5;
+      'h6: dout = outbuf6;
+      'h7: dout = outbuf7;
+      'h8: dout = outbuf8;
+      'h9: dout = outbuf9;
+      'hA: dout = outbufA;
+      'hB: dout = outbufB;
+      'hC: dout = outbufC;
+      'hD: dout = outbufD;
+      'hE: dout = outbufE;
+      'hF: dout = outbufF;
     endcase
   end
+
+  always_latch begin
+    if (~rw_to_mem & en_to_boot) begin
+      boot_to_cpu = dout;
+    end
+  end
+    
   // avoid linter warning about unused pins:
   wire _unused_pin = ena;
   wire [4:0] _unused_pins = uio_in[7:3];
