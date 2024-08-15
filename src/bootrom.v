@@ -14,10 +14,20 @@ module bootrom (
 
   reg [15:0] outbuf0, outbuf1, outbuf2, outbuf3, outbuf4, outbuf5, outbuf6, outbuf7;
   reg [15:0] outbuf8, outbuf9, outbufA, outbufB, outbufC, outbufD, outbufE, outbufF;
-  reg [15:0] dout_internal;
+  reg [15:0] dout_internal, databuf;
   wire romclk;
   wire clk_gated, clk7th; //clk8th, clk9th, clkAth, clkBth, clkCth, clkDth, clkEth, clkFth;
   
+  always_latch begin
+    if (cs) begin
+      if (we) begin
+        databuf = din;
+      end else begin
+        dout = dout_internal;
+      end
+    end
+  end
+
   assign clk_gated = cs & we & clk;
   assign romclk = clk & 1'b0;
   always @ (posedge romclk or posedge rst) begin
@@ -75,7 +85,7 @@ module bootrom (
     if (rst) begin
       outbuf7 <= 16'h0000;
     end else begin
-      outbuf7 <= din;
+      outbuf7 <= databuf;
     end
   end
 //  assign clk8th = addr[3] & ~addr[2] & ~addr[1] & ~addr[0] & clk_gated;
@@ -83,7 +93,7 @@ module bootrom (
     if (rst) begin
       outbuf8 <= 16'h0000;
     end else begin
-      outbuf8 <= din;
+      outbuf8 <= databuf;
     end
   end
 //  assign clk9th = addr[3] & ~addr[2] & ~addr[1] & addr[0] & clk_gated;
@@ -91,7 +101,7 @@ module bootrom (
     if (rst) begin
       outbuf9 <= 16'h0000;
     end else begin
-      outbuf9 <= din;
+      outbuf9 <= databuf;
     end
   end
 //  assign clkAth = addr[3] & ~addr[2] & addr[1] & ~addr[0] & clk_gated;
@@ -99,7 +109,7 @@ module bootrom (
     if (rst) begin
       outbufA <= 16'h0000;
     end else begin
-      outbufA <= din;
+      outbufA <= databuf;
     end
   end
 //  assign clkBth = addr[3] & ~addr[2] & addr[1] & addr[0] & clk_gated;
@@ -107,7 +117,7 @@ module bootrom (
     if (rst) begin
       outbufB <= 16'h0000;
     end else begin
-      outbufB <= din;
+      outbufB <= databuf;
     end
   end
 //  assign clkCth = addr[3] & addr[2] & ~addr[1] & ~addr[0] & clk_gated;
@@ -115,7 +125,7 @@ module bootrom (
     if (rst) begin
       outbufC <= 16'h0000;
     end else begin
-      outbufC <= din;
+      outbufC <= databuf;
     end
   end
 //  assign clkDth = addr[3] & addr[2] & ~addr[1] & addr[0] & clk_gated;
@@ -123,7 +133,7 @@ module bootrom (
     if (rst) begin
       outbufD <= 16'h0000;
     end else begin
-      outbufD <= din;
+      outbufD <= databuf;
     end
   end
 //  assign clkEth = addr[3] & addr[2] & addr[1] & ~addr[0] & clk_gated;
@@ -131,7 +141,7 @@ module bootrom (
     if (rst) begin
       outbufE <= 16'h0000;
     end else begin
-      outbufE <= din;
+      outbufE <= databuf;
     end
   end
 //  assign clkFth = addr[3] & addr[2] & addr[1] & addr[0] & clk_gated;
@@ -139,7 +149,7 @@ module bootrom (
     if (rst) begin
       outbufF <= 16'h0000;
     end else begin
-      outbufF <= din;
+      outbufF <= databuf;
     end
   end
 
@@ -162,12 +172,6 @@ module bootrom (
       'hE: dout_internal = outbufE;
       'hF: dout_internal = outbufF;
     endcase
-  end
-
-  always_latch begin
-    if (~we & cs) begin
-      dout = dout_internal;
-    end
   end
 
 endmodule
