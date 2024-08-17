@@ -14,23 +14,15 @@ module bootrom (
 
   reg [15:0] outbuf0, outbuf1, outbuf2, outbuf3, outbuf4, outbuf5, outbuf6, outbuf7;
   reg [15:0] outbuf8, outbuf9, outbufA, outbufB, outbufC, outbufD, outbufE, outbufF;
-  reg [15:0] dout_internal, databuf;
-  reg [3:0] addrbuf;
+  reg [15:0] dout_internal;
   wire romclk;
-  wire clk_gated, clk7th; //clk8th, clk9th, clkAth, clkBth, clkCth, clkDth, clkEth, clkFth;
   
   always_latch begin
-    if (cs) begin
-      addrbuf = addr;
-      if (we) begin
-        databuf = din;
-      end else begin
-        dout = dout_internal;
-      end
+    if (~we & cs) begin
+      dout = dout_internal;
     end
   end
 
-  assign clk_gated = cs & we & clk;
   assign romclk = clk & 1'b0;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
@@ -69,7 +61,7 @@ module bootrom (
   end
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
-      outbuf5 <= 16'h3007;
+      outbuf5 <= 16'h3010;
     end else begin
       outbuf5 <= 16'h0000;
     end
@@ -81,77 +73,67 @@ module bootrom (
       outbuf6 <= 16'h0000;
     end
   end
-  
-  assign clk7th = ~addrbuf[3] & addrbuf[2] & addrbuf[1] & addrbuf[0] & clk_gated;
   always @ (posedge clk7th or posedge rst) begin
     if (rst) begin
-      outbuf7 <= 16'h0000;
+      outbuf7 <= 16'h0007;
     end else begin
-      outbuf7 <= databuf;
+      outbuf7 <= 16'h0000;
     end
   end
-//  assign clk8th = addr[3] & ~addr[2] & ~addr[1] & ~addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbuf8 <= 16'h0000;
     end else begin
-      outbuf8 <= databuf;
+      outbuf8 <= 16'h0000;
     end
   end
-//  assign clk9th = addr[3] & ~addr[2] & ~addr[1] & addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbuf9 <= 16'h0000;
     end else begin
-      outbuf9 <= databuf;
+      outbuf9 <= 16'h0000;
     end
   end
-//  assign clkAth = addr[3] & ~addr[2] & addr[1] & ~addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufA <= 16'h0000;
     end else begin
-      outbufA <= databuf;
+      outbufA <= 16'h0000;
     end
   end
-//  assign clkBth = addr[3] & ~addr[2] & addr[1] & addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufB <= 16'h0000;
     end else begin
-      outbufB <= databuf;
+      outbufB <= 16'h0000;
     end
   end
-//  assign clkCth = addr[3] & addr[2] & ~addr[1] & ~addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufC <= 16'h0000;
     end else begin
-      outbufC <= databuf;
+      outbufC <= 16'h0000;
     end
   end
-//  assign clkDth = addr[3] & addr[2] & ~addr[1] & addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufD <= 16'h0000;
     end else begin
-      outbufD <= databuf;
+      outbufD <= 16'h0000;
     end
   end
-//  assign clkEth = addr[3] & addr[2] & addr[1] & ~addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufE <= 16'h0000;
     end else begin
-      outbufE <= databuf;
+      outbufE <= 16'h0000;
     end
   end
-//  assign clkFth = addr[3] & addr[2] & addr[1] & addr[0] & clk_gated;
   always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbufF <= 16'h0000;
     end else begin
-      outbufF <= databuf;
+      outbufF <= 16'h0000;
     end
   end
 
