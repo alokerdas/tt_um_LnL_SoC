@@ -138,7 +138,7 @@ module bootrom (
   end
 
   always @* begin
-    case (addrbuf)
+    case (addr)
       'h0: dout_internal = outbuf0;
       'h1: dout_internal = outbuf1;
       'h2: dout_internal = outbuf2;
