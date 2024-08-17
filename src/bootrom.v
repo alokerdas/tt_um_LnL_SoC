@@ -73,7 +73,7 @@ module bootrom (
       outbuf6 <= 16'h0000;
     end
   end
-  always @ (posedge clk7th or posedge rst) begin
+  always @ (posedge romclk or posedge rst) begin
     if (rst) begin
       outbuf7 <= 16'h0007;
     end else begin
