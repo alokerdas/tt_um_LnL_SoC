@@ -31,8 +31,8 @@ module tt_um_LnL_SoC (
     if (~rst_n) rst_n_i <= 1'b0;
     else rst_n_i <= 1'b1;
 
-  assign en_to_spi = |addr_to_memio[11:4] & en_to_dev;
-  assign en_to_boot = ~(|addr_to_memio[11:4]) & en_to_dev;
+  assign en_to_spi = |addr_to_memio[11:5] & en_to_dev;
+  assign en_to_boot = ~(|addr_to_memio[11:5]) & en_to_dev;
   assign load_spi = rw_to_mem & en_to_spi;
   assign unload_spi = ~rw_to_mem & en_to_spi;
   assign data_to_cpu[7:0] = en_to_spi ? spi_to_cpu : boot_to_cpu[7:0];
@@ -62,8 +62,7 @@ module tt_um_LnL_SoC (
 `endif
     .clk(clk),
     .rst(~rst_n_i),
-    .addr(addr_to_memio[3:0]),
-    .din(data_to_dev),
+    .addr(addr_to_memio[4:0]),
     .dout(boot_to_cpu),
     .cs(en_to_boot),
     .we(rw_to_mem)
@@ -89,5 +88,6 @@ module tt_um_LnL_SoC (
   // avoid linter warning about unused pins:
   wire _unused_pin = ena;
   wire [4:0] _unused_pins = uio_in[7:3];
+  wire [7:0] _unused_pins_dat = data_to_dev[15:8];
 
 endmodule // tt_um_LnL_SoC
